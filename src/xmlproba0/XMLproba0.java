@@ -8,6 +8,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import org.w3c.dom.Document;
@@ -27,8 +28,9 @@ public class XMLproba0 {
      */
     public static void main(String[] args) throws Exception {
         String nombreArchivo = "./autores.xml";
-        escribir(nombreArchivo);
-        leer(nombreArchivo);
+        //escribir(nombreArchivo);
+        //leerSinEtiquetas(nombreArchivo);
+        leerConEtiquetas(nombreArchivo);
     }
 
     public static void escribir(String nombreArchivo) throws Exception {
@@ -67,7 +69,7 @@ public class XMLproba0 {
         System.out.println("Archivo Escrito");
     }
 
-    public static void leer(String nombreArchivo) throws Exception {
+    public static void leerSinEtiquetas(String nombreArchivo) throws Exception {
         System.out.println("Lectura del archivo modo 1");
         try {
             DocumentBuilderFactory fábricaCreadorDocumento = DocumentBuilderFactory.newInstance();
@@ -116,13 +118,27 @@ public class XMLproba0 {
         }
     }
 
-    public static void leer2() throws Exception {
+    public static void leerConEtiquetas(String nombreArchivo) throws Exception {
         System.out.println("Lectura del archivo modo 2");
         XMLInputFactory factory = XMLInputFactory.newInstance();
-        FileInputStream fis = new FileInputStream("autores.xml");
+        FileInputStream fis = new FileInputStream(nombreArchivo);
         XMLStreamReader reader = factory.createXMLStreamReader(fis);
-        
+        // FLUJO DE LECTURA
+        while (reader.hasNext()) {
+            reader.next();
+            if (reader.getEventType() == XMLStreamConstants.START_ELEMENT) {
+                if (reader.getAttributeLocalName(0) != null) {
+                    System.out.print("<" + reader.getLocalName() + " " + reader.getAttributeLocalName(0) + "='" + reader.getAttributeValue(0) + "'>");
+                } else {
+                    System.out.print("<" + reader.getLocalName() + ">");
+                }
+            } else if (reader.getEventType() == XMLStreamConstants.CHARACTERS) {
+                System.out.print(reader.getText());
+            } else if (reader.getEventType() == XMLStreamConstants.END_ELEMENT) {
+                System.out.print("</" + reader.getLocalName() + ">");
+            }
+        }
+        System.out.println("");
         reader.close();
-        fis.close();
     }
 }
