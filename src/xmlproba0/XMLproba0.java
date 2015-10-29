@@ -127,10 +127,10 @@ public class XMLproba0 {
         while (reader.hasNext()) {
             reader.next();
             if (reader.getEventType() == XMLStreamConstants.START_ELEMENT) {
-                if (reader.getAttributeLocalName(0) != null) {
-                    System.out.print("<" + reader.getLocalName() + " " + reader.getAttributeLocalName(0) + "='" + reader.getAttributeValue(0) + "'>");
-                } else {
+                if (reader.getAttributeLocalName(0) == null) {
                     System.out.print("<" + reader.getLocalName() + ">");
+                } else {
+                    System.out.print("<" + reader.getLocalName() + " " + reader.getAttributeLocalName(0) + "='" + reader.getAttributeValue(0) + "'>");
                 }
             } else if (reader.getEventType() == XMLStreamConstants.CHARACTERS) {
                 System.out.print(reader.getText());
